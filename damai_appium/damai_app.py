@@ -21,9 +21,9 @@ device_app_info = AppiumOptions()
 # 操作系统
 device_app_info.set_capability('platformName', 'Android')
 # 操作系统版本
-device_app_info.set_capability('platformVersion', '10')
+device_app_info.set_capability('platformVersion', '13')
 # 设备名称
-device_app_info.set_capability('deviceName', 'YourDeviceName')
+device_app_info.set_capability('deviceName', 'rk6hgunny95zxnr')
 # app package
 device_app_info.set_capability('appPackage', 'cn.damai')
 # app activity name
@@ -52,32 +52,41 @@ driver.update_settings({"waitForIdleTimeout": 10})
 # 点击搜索框
 driver.find_element(by=By.ID, value='homepage_header_search_btn').click()
 
-# 输入搜索关键词
+print("输入搜索关键词")
 driver.find_element(by=By.ID, value='header_search_v2_input').send_keys(config.keyword)
 
-# 点击第一个搜索结果
+print("点击第一个搜索结果")
 driver.find_element(by=By.XPATH,
                     value='//androidx.recyclerview.widget.RecyclerView[@resource-id="cn.damai:id/search_v2_suggest_recycler"]/android.widget.RelativeLayout[1]').click()
 
-# 点击结果列表的第一个
+print("点击结果列表的第一个")
 driver.find_element(by=By.XPATH,
                     value='(//android.widget.LinearLayout[@resource-id="cn.damai:id/ll_search_item"])[1]').click()
 
 if driver.find_elements(by=By.XPATH,
                         value='//android.widget.FrameLayout[@resource-id="cn.damai:id/trade_project_detail_purchase_status_bar_container_fl"]'):
+    print("城市和日期选择")
     # 城市选择
     for city in driver.find_elements(by=By.ID, value='tv_tour_city'):
+        print("页面城市：" + city.text)
         if config.city in city.text:
             city.click()
             break
     # 日期选择
     for date in driver.find_elements(by=By.ID, value='tv_tour_time'):
+        print("页面日期：" + date.text)
         if config.date in date.text:
             date.click()
             break
 
+print("点击立即抢购")
 while driver.find_elements(by=By.XPATH,
                            value='//android.widget.FrameLayout[@resource-id="cn.damai:id/trade_project_detail_purchase_status_bar_container_fl"]'):
+
+    tmp = driver.find_element(by=By.XPATH,
+                                  value='//android.widget.TextView[@resource-id="cn.damai:id/project_item_bottom_follow_text_tv"]').text
+    print("当前状态：" + tmp)
+    # this button resource-id is unkonw, can't be found in UIAutomator.
     buy_btn = driver.find_element(by=By.XPATH,
                                   value='//android.widget.TextView[@resource-id="cn.damai:id/tv_left_main_text"]').text
     if buy_btn == '立即购买':
@@ -138,9 +147,11 @@ while driver.find_elements(by=By.XPATH,
             driver.find_element(by=By.XPATH,
                                 value='//android.view.View[@resource-id="cn.damai:id/btn_buy_bottom_div_line"]/..').click()
     if buy_btn == '已预约':
+        print("已预约, skip this time")
         break
     else:
         # 模拟下拉刷新
+        print("当前按钮：" + buy_btn)
         driver.swipe(500, 400, 500, 2000, 300)
         sleep(0.1)
 

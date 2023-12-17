@@ -156,9 +156,10 @@ class Concert:
                     by_link = self.driver.find_element(value='buy-link',
                                                        by=By.CLASS_NAME).text if self.driver.find_elements(
                         value='buy-link', by=By.CLASS_NAME) else None
-                    if buy_button == "提交缺货登记":
+                    if buy_button == "提交缺货登记" or buy_button == "预约抢票":
                         # 改变现有状态
                         self.status = 2
+                        time.sleep(5)
                         self.driver.get(self.config.target_url)
                         print('***抢票未开始，刷新等待开始***\n')
                         continue
